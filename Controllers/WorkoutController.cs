@@ -20,7 +20,7 @@ public class WorkoutController : ControllerBase
 
     [Authorize]
     [HttpPost()]
-    public async Task<ActionResult> CreateWorkout()
+    public async Task<IActionResult> CreateWorkout()
     {
         var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
@@ -34,7 +34,7 @@ public class WorkoutController : ControllerBase
     [Authorize]
     [HttpPut("{id}/addexercise")]
     [Produces(MediaTypeNames.Application.Json)]
-    public async Task<ActionResult> AddExcercisesToWorkout(
+    public async Task<IActionResult> AddExcercisesToWorkout(
         [FromRoute] string id,
         [FromBody] CreateWorkoutExerciseRequest req
     )
@@ -45,9 +45,36 @@ public class WorkoutController : ControllerBase
 
         if (!result.IsSuccess)
         {
-            return result.Statuscode == 400 ? NotFound(result.Error) : Unauthorized(result.Error);
+            return this.ToActionResult(result);
         }
 
         return Ok(new { message = "Success." });
+    }
+
+    [Authorize]
+    [HttpDelete("{id}")]
+    public async Task<IActionResult> DeleteWorkout(string id)
+    {
+        var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+        var result = await _workoutService.DeleteWorkoutService(id, userId!);
+
+        if (!result.IsSuccess)
+        {
+            return this.ToActionResult(result);
+        }
+
+        return NoContent();
+    }
+
+    [Authorize]
+    [HttpGet("getmy")]
+    public async Task<IActionResult> GetMyWorkouts()
+    {
+        var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+        var result = await _workoutService.GetMyWorkoutsService(userId!);
+
+        return Ok(result.Data);
     }
 }

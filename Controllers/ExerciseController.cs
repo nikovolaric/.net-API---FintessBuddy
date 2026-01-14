@@ -18,7 +18,7 @@ public class ExerciseController : ControllerBase
 
     [Authorize]
     [HttpGet(Name = "GetAllExercises")]
-    public async Task<ActionResult<List<Exercise>>> GetAll()
+    public async Task<IActionResult> GetAll()
     {
         var exercises = await _db.Exercises.ToListAsync();
         return Ok(exercises);
@@ -26,7 +26,7 @@ public class ExerciseController : ControllerBase
 
     [Authorize]
     [HttpGet("{id:long}")]
-    public async Task<ActionResult<Exercise>> GetOne([FromRoute] long id)
+    public async Task<IActionResult> GetOne([FromRoute] long id)
     {
         var exierciseItem = await _db.Exercises.FindAsync(id);
 

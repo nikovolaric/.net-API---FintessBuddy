@@ -25,7 +25,7 @@ public class AuthController : ControllerBase
     [Produces(MediaTypeNames.Application.Json)]
     [ProducesResponseType(StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<ActionResult<User>> SignUp([FromBody] SignUpRequest req)
+    public async Task<IActionResult> SignUp([FromBody] SignUpRequest req)
     {
         if (req.password != req.confirmPassword)
         {
@@ -74,7 +74,7 @@ public class AuthController : ControllerBase
     [Produces(MediaTypeNames.Application.Json)]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-    public async Task<ActionResult> Logout()
+    public async Task<IActionResult> Logout()
     {
         Response.Cookies.Delete("access_token");
 
