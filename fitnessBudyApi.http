@@ -1,0 +1,6 @@
+@fitnessBudyApi_HostAddress = http://localhost:5034
+
+GET {{fitnessBudyApi_HostAddress}}/
+Accept: application/json
+
+###
