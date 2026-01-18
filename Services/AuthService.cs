@@ -21,14 +21,19 @@ public class AuthService : IAuthService
 
     public async Task<User> SignUpService(SignUpRequest req)
     {
-        var user = new User { id = Guid.NewGuid(), username = req.username };
+        var user = new User
+        {
+            id = Guid.NewGuid(),
+            username = req.username,
+            role = Role.user,
+        };
 
         var hasher = new PasswordHasher<User>();
         user.password = hasher.HashPassword(user, req.password);
 
         if (_env.IsDevelopment())
         {
-            var newUser = _db.Users.Add(user);
+            _db.Users.Add(user);
 
             await _db.SaveChangesAsync();
         }
@@ -63,6 +68,7 @@ public class AuthService : IAuthService
         {
             new Claim(JwtRegisteredClaimNames.Sub, user.id.ToString()),
             new Claim(JwtRegisteredClaimNames.UniqueName, user.username),
+            new Claim(ClaimTypes.Role, user.role.ToString()),
         };
 
         var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey));

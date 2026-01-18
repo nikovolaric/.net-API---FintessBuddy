@@ -10,4 +10,11 @@ public class User
     public required string username { get; set; }
 
     public string? password { get; set; }
+    public Role role { get; set; }
+}
+
+public enum Role
+{
+    user = 0,
+    admin = 1,
 }
