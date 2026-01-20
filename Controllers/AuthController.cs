@@ -18,9 +18,6 @@ public class AuthController : ControllerBase
         _env = env;
     }
 
-    /// <remarks>
-    /// User will not actually be created, for database protection. Login credential are provided below.
-    /// </remarks>
     [HttpPost("signup")]
     [Produces(MediaTypeNames.Application.Json)]
     [ProducesResponseType(StatusCodes.Status201Created)]
@@ -37,10 +34,8 @@ public class AuthController : ControllerBase
         return Created("/api/auth", new { user.id, user.username });
     }
 
-    /// <remarks>
-    /// To login use credentials
+    /// To login as admin use credentials
     /// username:fitnesspal pw:fitnesspalpw
-    /// </remarks>
     [HttpPost("login")]
     [Produces(MediaTypeNames.Application.Json)]
     [ProducesResponseType(StatusCodes.Status200OK)]
@@ -60,9 +55,9 @@ public class AuthController : ControllerBase
             new CookieOptions
             {
                 HttpOnly = true,
-                Secure = _env.IsDevelopment(),
+                Secure = !_env.IsDevelopment(),
                 SameSite = SameSiteMode.Strict,
-                Expires = DateTime.UtcNow.AddMinutes(30),
+                Expires = DateTime.UtcNow.AddMinutes(60),
             }
         );
 

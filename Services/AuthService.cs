@@ -31,12 +31,9 @@ public class AuthService : IAuthService
         var hasher = new PasswordHasher<User>();
         user.password = hasher.HashPassword(user, req.password);
 
-        if (_env.IsDevelopment())
-        {
-            _db.Users.Add(user);
+        _db.Users.Add(user);
 
-            await _db.SaveChangesAsync();
-        }
+        await _db.SaveChangesAsync();
 
         return user;
     }
