@@ -2,7 +2,7 @@ using fitnessBudyApi.Models;
 
 public interface IAuthService
 {
-    Task<User> SignUpService(SignUpRequest req);
+    Task<ServiceResult<User>> SignUpService(SignUpRequest req);
     Task<LoginResult> LoginService(LoginRequest req);
 }
 

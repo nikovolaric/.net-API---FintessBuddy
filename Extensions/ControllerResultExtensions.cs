@@ -10,6 +10,7 @@ public static class ControllerResultExtensions
             401 => controller.Unauthorized(result.Error),
             403 => controller.Forbid(),
             404 => controller.NotFound(result.Error),
+            409 => controller.Conflict(result.Error),
             _ => controller.StatusCode(500, "Unexpected error"),
         };
     }

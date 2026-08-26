@@ -1,0 +1,21 @@
+services:
+  postgres:
+    image: postgres:17-alpine
+    container_name: fitnessbuddy-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-fitnessbuddy}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-fitnessbuddy}
+      POSTGRES_DB: ${POSTGRES_DB:-fitnessbuddy}
+    ports:
+      - "${POSTGRES_PORT:-5432}:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-fitnessbuddy} -d ${POSTGRES_DB:-fitnessbuddy}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  postgres-data:

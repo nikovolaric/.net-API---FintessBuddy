@@ -29,13 +29,18 @@ public class AuthController : ControllerBase
             return BadRequest("Passwords must match!");
         }
 
-        var user = await _authService.SignUpService(req);
+        var result = await _authService.SignUpService(req);
+
+        if (!result.IsSuccess)
+        {
+            return this.ToActionResult(result);
+        }
+
+        var user = result.Data!;
 
         return Created("/api/auth", new { user.id, user.username });
     }
 
-    /// To login as admin use credentials
-    /// username:fitnesspal pw:fitnesspalpw
     [HttpPost("login")]
     [Produces(MediaTypeNames.Application.Json)]
     [ProducesResponseType(StatusCodes.Status200OK)]

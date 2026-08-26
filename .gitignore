@@ -13,5 +13,7 @@ appsettings.*.json
 
 publish/
 
+devops/.env
+
 .DS_Store
 Thumbs.db

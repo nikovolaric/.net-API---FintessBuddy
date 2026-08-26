@@ -12,9 +12,7 @@ public class WorkoutService : IWorkoutService
 
     public async Task<Workout> CreateWorkoutService(Guid userId)
     {
-        var user = await _db.Users.FindAsync(userId);
-
-        var workout = new Workout { userid = userId, user = user! };
+        var workout = new Workout { userid = userId };
 
         await _db.Workouts.AddAsync(workout);
 
@@ -34,7 +32,7 @@ public class WorkoutService : IWorkoutService
         );
 
         if (workout == null)
-            return ServiceResult.Fail("Workout not found or does not belong to user.", 401);
+            return ServiceResult.Fail("Workout not found or does not belong to user.", 404);
 
         var exercise = await _db.Exercises.FindAsync(req.Exerciseid);
 
@@ -51,8 +49,6 @@ public class WorkoutService : IWorkoutService
             workout = workout,
         };
 
-        workout.workoutExercises.Add(workoutExercise);
-
         _db.WorkoutExercises.Add(workoutExercise);
 
         await _db.SaveChangesAsync();
@@ -67,7 +63,7 @@ public class WorkoutService : IWorkoutService
         );
 
         if (workout == null)
-            return ServiceResult.Fail("Workout not found or does not belong to user.", 401);
+            return ServiceResult.Fail("Workout not found or does not belong to user.", 404);
 
         _db.Workouts.Remove(workout);
         await _db.SaveChangesAsync();

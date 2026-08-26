@@ -19,8 +19,15 @@ public class AuthService : IAuthService
         _env = env;
     }
 
-    public async Task<User> SignUpService(SignUpRequest req)
+    public async Task<ServiceResult<User>> SignUpService(SignUpRequest req)
     {
+        var exists = await _db.Users.AnyAsync(u => u.username == req.username);
+
+        if (exists)
+        {
+            return ServiceResult<User>.Fail("Username already taken.", 409);
+        }
+
         var user = new User
         {
             id = Guid.NewGuid(),
@@ -35,7 +42,7 @@ public class AuthService : IAuthService
 
         await _db.SaveChangesAsync();
 
-        return user;
+        return ServiceResult<User>.Success(user);
     }
 
     public async Task<LoginResult> LoginService(LoginRequest req)
@@ -44,7 +51,7 @@ public class AuthService : IAuthService
 
         if (user == null || user.password == null)
         {
-            return LoginResult.Fail("User not found!");
+            return LoginResult.Fail("Invalid credentials.");
         }
 
         var hasher = new PasswordHasher<User>();
@@ -53,7 +60,7 @@ public class AuthService : IAuthService
 
         if (result == 0)
         {
-            return LoginResult.Fail("Password is incorrect!");
+            return LoginResult.Fail("Invalid credentials.");
         }
 
         var jwtKey = _configuration["JWT_SECRET_KEY"];
@@ -73,7 +80,7 @@ public class AuthService : IAuthService
 
         var token = new JwtSecurityToken(
             claims: claims,
-            expires: DateTime.Now.AddHours(1),
+            expires: DateTime.UtcNow.AddHours(1),
             signingCredentials: credentials
         );
 
